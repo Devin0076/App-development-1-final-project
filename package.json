@@ -16,5 +16,15 @@
   "bugs": {
     "url": "https://github.com/Devin0076/App-development-1-final-project/issues"
   },
-  "homepage": "https://github.com/Devin0076/App-development-1-final-project#readme"
+  "homepage": "https://github.com/Devin0076/App-development-1-final-project#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "nodemon": "^3.1.11",
+    "supertest": "^7.1.4"
+  }
 }
