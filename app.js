@@ -25,8 +25,8 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/characters', require('./routes/characters'));
+app.use('/ban-stages', require('./routes/banstages'));
 // Other routes will be added later:
-// app.use('/ban-stages', ...)
 // app.use('/counterpick-stages', ...)
 // app.use('/tips', ...)
 
