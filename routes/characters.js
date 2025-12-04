@@ -12,11 +12,18 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-// GET /characters/:id – get character by ID
+// GET /characters/:id – get full character info including stages and tips
 router.get('/:id', async (req, res, next) => {
   try {
-    const { Character } = req.models;
-    const character = await Character.findByPk(req.params.id);
+    const { Character, BanStage, CounterpickStage, Tip } = req.models;
+
+    const character = await Character.findByPk(req.params.id, {
+      include: [
+        { model: BanStage },
+        { model: CounterpickStage },
+        { model: Tip }
+      ]
+    });
 
     if (!character) {
       return res.status(404).json({ error: "Character not found" });
@@ -27,6 +34,7 @@ router.get('/:id', async (req, res, next) => {
     next(err);
   }
 });
+
 
 // POST /characters – create new character
 router.post('/', async (req, res, next) => {
