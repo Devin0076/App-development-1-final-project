@@ -1,3 +1,5 @@
+// Routes for managing tips associated with characters
+
 const express = require('express');
 const router = express.Router();
 

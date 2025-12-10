@@ -1,3 +1,5 @@
+// Routes for managing characters and their matchup data
+
 const express = require('express');
 const router = express.Router();
 

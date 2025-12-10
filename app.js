@@ -1,33 +1,39 @@
+// Main application file that sets up middleware, routes, and database models.
+
 const express = require('express');
 const sequelize = require('./config/database');
 const initModels = require('./models');
 const logger = require('./middleware/logger');
 const errorHandler = require('./middleware/errorHandler');
 
-// Create Express app
+// Create Express app and initialize models
 const app = express();
 const models = initModels(sequelize);
 
-// Middleware
+// Parse incoming JSON requests 
 app.use(express.json());
+
+// Custom request logger middleware
 app.use(logger);
 
-// Attach models to request object
+// Attach models to request object so they can be accessed in routes
 app.use((req, res, next) => {
   req.models = models;
   next();
 });
 
-// Root route
+// Simple health check/ root route
 app.get('/', (req, res) => {
   res.json({ message: "Pit / Dark Pit Matchup API MVP" });
 });
 
 // Routes
 app.use('/characters', require('./routes/characters'));
-app.use('/ban-stages', require('./routes/banstages'));
+app.use('/ban-stages', require('./routes/banStages'));
 app.use('/counterpick-stages', require('./routes/counterpickStages'));
 app.use('/tips', require('./routes/tips'));
+
+// Global error handling middleware
 
 app.use(errorHandler);
 

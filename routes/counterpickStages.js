@@ -1,3 +1,5 @@
+// Routes for managing counterpick stages and their associations with characters
+
 const express = require('express');
 const router = express.Router();
 

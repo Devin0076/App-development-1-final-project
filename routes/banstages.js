@@ -1,3 +1,5 @@
+// Routes for managing ban stages and their associations with characters
+
 const express = require('express');
 const router = express.Router();
 
