@@ -8,6 +8,8 @@ module.exports = (sequelize) => {
   const BanStage = require('./BanStage')(sequelize, DataTypes);
   const CounterpickStage = require('./CounterpickStage')(sequelize, DataTypes);
   const Tip = require('./Tip')(sequelize, DataTypes);
+  const User = require('./User')(sequelize, DataTypes);
+
 
   // Define relationships between models
 
@@ -28,6 +30,7 @@ module.exports = (sequelize) => {
     Character,
     BanStage,
     CounterpickStage,
-    Tip
+    Tip,
+    User
   };
 };
