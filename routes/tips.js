@@ -3,6 +3,8 @@
 const express = require('express');
 const router = express.Router();
 
+const ALLOWED_DIFFICULTIES = ['easy', 'medium', 'hard'];
+
 // GET /tips – get all tips
 router.get('/', async (req, res, next) => {
   try {
@@ -36,10 +38,24 @@ router.post('/', async (req, res, next) => {
     const { Tip, Character } = req.models;
     const { characterId, tipTitle, description, difficultyLevel } = req.body;
 
-    if (!characterId || !tipTitle || !description) {
-      return res.status(400).json({
-        error: "characterId, tipTitle, and description are required"
-      });
+    if (!characterId) {
+      return res.status(400).json({ error: "characterId is required" });
+    }
+
+    if (!tipTitle || typeof tipTitle !== 'string' || !tipTitle.trim()) {
+      return res.status(400).json({ error: "tipTitle is required and must be a non-empty string" });
+    }
+
+    if (!description || typeof description !== 'string' || !description.trim()) {
+      return res.status(400).json({ error: "description is required and must be a non-empty string" });
+    }
+
+    if (difficultyLevel !== undefined && difficultyLevel !== null) {
+      if (!ALLOWED_DIFFICULTIES.includes(difficultyLevel)) {
+        return res.status(400).json({
+          error: `difficultyLevel must be one of: ${ALLOWED_DIFFICULTIES.join(', ')}`
+        });
+      }
     }
 
     const character = await Character.findByPk(characterId);
@@ -49,8 +65,8 @@ router.post('/', async (req, res, next) => {
 
     const newTip = await Tip.create({
       characterId,
-      tipTitle,
-      description,
+      tipTitle: tipTitle.trim(),
+      description: description.trim(),
       difficultyLevel
     });
 
@@ -59,6 +75,7 @@ router.post('/', async (req, res, next) => {
     next(err);
   }
 });
+
 
 // PUT /tips/:id – update a tip
 router.put('/:id', async (req, res, next) => {
@@ -70,7 +87,29 @@ router.put('/:id', async (req, res, next) => {
       return res.status(404).json({ error: "Tip not found" });
     }
 
-    const { tipTitle, description, difficultyLevel } = req.body;
+    let { tipTitle, description, difficultyLevel } = req.body;
+
+    if (tipTitle !== undefined) {
+      if (typeof tipTitle !== 'string' || !tipTitle.trim()) {
+        return res.status(400).json({ error: "tipTitle must be a non-empty string when provided" });
+      }
+      tipTitle = tipTitle.trim();
+    }
+
+    if (description !== undefined) {
+      if (typeof description !== 'string' || !description.trim()) {
+        return res.status(400).json({ error: "description must be a non-empty string when provided" });
+      }
+      description = description.trim();
+    }
+
+    if (difficultyLevel !== undefined && difficultyLevel !== null) {
+      if (!ALLOWED_DIFFICULTIES.includes(difficultyLevel)) {
+        return res.status(400).json({
+          error: `difficultyLevel must be one of: ${ALLOWED_DIFFICULTIES.join(', ')}`
+        });
+      }
+    }
 
     await tip.update({
       tipTitle: tipTitle ?? tip.tipTitle,
@@ -83,6 +122,7 @@ router.put('/:id', async (req, res, next) => {
     next(err);
   }
 });
+
 
 // DELETE /tips/:id – delete a tip
 router.delete('/:id', async (req, res, next) => {

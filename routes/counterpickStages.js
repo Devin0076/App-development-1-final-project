@@ -36,10 +36,23 @@ router.post('/', async (req, res, next) => {
     const { CounterpickStage, Character } = req.models;
     const { characterId, stageName, benefit, rating } = req.body;
 
-    if (!characterId || !stageName || !benefit) {
-      return res.status(400).json({
-        error: "characterId, stageName, and benefit are required"
-      });
+    if (!characterId) {
+      return res.status(400).json({ error: "characterId is required" });
+    }
+
+    if (!stageName || typeof stageName !== 'string' || !stageName.trim()) {
+      return res.status(400).json({ error: "stageName is required and must be a non-empty string" });
+    }
+
+    if (!benefit || typeof benefit !== 'string' || !benefit.trim()) {
+      return res.status(400).json({ error: "benefit is required and must be a non-empty string" });
+    }
+
+    if (rating !== undefined) {
+      const r = Number(rating);
+      if (!Number.isInteger(r) || r < 1 || r > 5) {
+        return res.status(400).json({ error: "rating must be an integer between 1 and 5" });
+      }
     }
 
     const character = await Character.findByPk(characterId);
@@ -49,8 +62,8 @@ router.post('/', async (req, res, next) => {
 
     const newStage = await CounterpickStage.create({
       characterId,
-      stageName,
-      benefit,
+      stageName: stageName.trim(),
+      benefit: benefit.trim(),
       rating
     });
 
@@ -59,6 +72,7 @@ router.post('/', async (req, res, next) => {
     next(err);
   }
 });
+
 
 // PUT /counterpick-stages/:id – update a counterpick stage
 router.put('/:id', async (req, res, next) => {
@@ -70,7 +84,28 @@ router.put('/:id', async (req, res, next) => {
       return res.status(404).json({ error: "Counterpick stage not found" });
     }
 
-    const { stageName, benefit, rating } = req.body;
+    let { stageName, benefit, rating } = req.body;
+
+    if (stageName !== undefined) {
+      if (typeof stageName !== 'string' || !stageName.trim()) {
+        return res.status(400).json({ error: "stageName must be a non-empty string when provided" });
+      }
+      stageName = stageName.trim();
+    }
+
+    if (benefit !== undefined) {
+      if (typeof benefit !== 'string' || !benefit.trim()) {
+        return res.status(400).json({ error: "benefit must be a non-empty string when provided" });
+      }
+      benefit = benefit.trim();
+    }
+
+    if (rating !== undefined) {
+      const r = Number(rating);
+      if (!Number.isInteger(r) || r < 1 || r > 5) {
+        return res.status(400).json({ error: "rating must be an integer between 1 and 5 when provided" });
+      }
+    }
 
     await stage.update({
       stageName: stageName ?? stage.stageName,
@@ -83,6 +118,7 @@ router.put('/:id', async (req, res, next) => {
     next(err);
   }
 });
+
 
 // DELETE /counterpick-stages/:id – delete a counterpick stage
 router.delete('/:id', async (req, res, next) => {

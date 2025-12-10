@@ -36,13 +36,25 @@ router.post('/', async (req, res, next) => {
     const { BanStage, Character } = req.models;
     const { characterId, stageName, reason, dangerRating } = req.body;
 
-    if (!characterId || !stageName || !reason) {
-      return res.status(400).json({
-        error: "characterId, stageName, and reason are required"
-      });
+    if (!characterId) {
+      return res.status(400).json({ error: "characterId is required" });
     }
 
-    // Optional: Check that the character exists
+    if (!stageName || typeof stageName !== 'string' || !stageName.trim()) {
+      return res.status(400).json({ error: "stageName is required and must be a non-empty string" });
+    }
+
+    if (!reason || typeof reason !== 'string' || !reason.trim()) {
+      return res.status(400).json({ error: "reason is required and must be a non-empty string" });
+    }
+
+    if (dangerRating !== undefined) {
+      const dr = Number(dangerRating);
+      if (!Number.isInteger(dr) || dr < 1 || dr > 5) {
+        return res.status(400).json({ error: "dangerRating must be an integer between 1 and 5" });
+      }
+    }
+
     const character = await Character.findByPk(characterId);
     if (!character) {
       return res.status(400).json({ error: "Character does not exist" });
@@ -50,8 +62,8 @@ router.post('/', async (req, res, next) => {
 
     const newBanStage = await BanStage.create({
       characterId,
-      stageName,
-      reason,
+      stageName: stageName.trim(),
+      reason: reason.trim(),
       dangerRating
     });
 
@@ -60,6 +72,7 @@ router.post('/', async (req, res, next) => {
     next(err);
   }
 });
+
 
 // PUT /ban-stages/:id – update a ban stage
 router.put('/:id', async (req, res, next) => {
@@ -71,7 +84,28 @@ router.put('/:id', async (req, res, next) => {
       return res.status(404).json({ error: "Ban stage not found" });
     }
 
-    const { stageName, reason, dangerRating } = req.body;
+    let { stageName, reason, dangerRating } = req.body;
+
+    if (stageName !== undefined) {
+      if (typeof stageName !== 'string' || !stageName.trim()) {
+        return res.status(400).json({ error: "stageName must be a non-empty string when provided" });
+      }
+      stageName = stageName.trim();
+    }
+
+    if (reason !== undefined) {
+      if (typeof reason !== 'string' || !reason.trim()) {
+        return res.status(400).json({ error: "reason must be a non-empty string when provided" });
+      }
+      reason = reason.trim();
+    }
+
+    if (dangerRating !== undefined) {
+      const dr = Number(dangerRating);
+      if (!Number.isInteger(dr) || dr < 1 || dr > 5) {
+        return res.status(400).json({ error: "dangerRating must be an integer between 1 and 5 when provided" });
+      }
+    }
 
     await banStage.update({
       stageName: stageName ?? banStage.stageName,
@@ -84,6 +118,7 @@ router.put('/:id', async (req, res, next) => {
     next(err);
   }
 });
+
 
 // DELETE /ban-stages/:id – delete a ban stage
 router.delete('/:id', async (req, res, next) => {

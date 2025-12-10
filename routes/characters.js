@@ -44,8 +44,8 @@ router.post('/', async (req, res, next) => {
     const { Character } = req.models;
     const { name, archetype, weightClass } = req.body;
 
-    if (!name) {
-      return res.status(400).json({ error: "Name is required" });
+    if (!name || typeof name !== 'string' || !name.trim()) {
+      return res.status(400).json({ error: "Name is required and must be a non-empty string" });
     }
 
     const newCharacter = await Character.create({
@@ -71,6 +71,12 @@ router.put('/:id', async (req, res, next) => {
     }
 
     const { name, archetype, weightClass } = req.body;
+
+    if (name !== undefined) {
+      if (typeof name !== 'string' || !name.trim()) {
+        return res.status(400).json({ error: "Name must be a non-empty string when provided" });
+      }
+    }
 
     await character.update({ name, archetype, weightClass });
 
