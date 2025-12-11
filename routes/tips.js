@@ -8,13 +8,14 @@ const ALLOWED_DIFFICULTIES = ['easy', 'medium', 'hard'];
 // GET /tips – get all tips
 router.get('/', async (req, res, next) => {
   try {
-    const { Tip, Character } = req.models;
-    const tips = await Tip.findAll({ include: Character });
+    const { Tip } = req.models;
+    const tips = await Tip.findAll();  // no JOIN to Characters here
     res.json(tips);
   } catch (err) {
     next(err);
   }
 });
+
 
 // GET /tips/:id – get a single tip by ID
 router.get('/:id', async (req, res, next) => {

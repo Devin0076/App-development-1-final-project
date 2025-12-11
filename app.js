@@ -1,5 +1,8 @@
 // Main application file that sets up middleware, routes, and database models.
 
+require('dotenv').config();
+
+
 const express = require('express');
 const sequelize = require('./config/database');
 const initModels = require('./models');
@@ -28,6 +31,9 @@ app.get('/', (req, res) => {
 });
 
 // Routes
+app.use('/auth', require('./routes/auth'));
+
+
 app.use('/characters', require('./routes/characters'));
 app.use('/ban-stages', require('./routes/banStages'));
 app.use('/counterpick-stages', require('./routes/counterpickStages'));

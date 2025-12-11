@@ -1,10 +1,10 @@
 const request = require('supertest');
 const app = require('../app');
 const sequelize = require('../config/database');
-const initModels = require('../models');
 
 beforeAll(async () => {
-  const models = initModels(sequelize);
+  const models = require('../models')(sequelize);
+
   await sequelize.sync({ force: true });
 
   const character = await models.Character.create({
