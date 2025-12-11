@@ -1,185 +1,199 @@
+
 # Pit / Dark Pit Matchup API
 
-This project is a REST API for storing and retrieving matchup information for Super Smash Bros. Ultimate characters, mainly focusing on Pit and Dark Pit. The idea is that a user can look up a character by their ID and instantly see everything related to their matchup: stages to ban, good counterpicks, and general tips. This project was built for a backend development class and shows how to use Express, Sequelize, routing, seeding, and basic testing.
+This REST API provides matchup information for the characters Pit and Dark Pit in Super Smash Bros. Ultimate. Players can look up any character and instantly see all relevant matchup data in one place, including:
+
+- Stages to ban
+- Stages to counterpick
+- General matchup tips
+
+The API was built as a backend development final project using Node.js, Express.js, Sequelize ORM, SQLite, and JWT-based authentication with role-based authorization.
 
 
 
-## Project Overview
+## Features
 
-The API uses four main types of data:
-
-- Characters  
-- Ban Stages  
-- Counterpick Stages  
-- Tips  
-
-All of these connect back to the character they belong to. When you request a character using their ID, the API returns all of their related matchup data in the same response.
-
-
-## Project Structure
-
-```
-project/
-├── config/
-│   └── database.js
-├── middleware/
-│   ├── logger.js
-│   └── errorHandler.js
-├── models/
-│   ├── Character.js
-│   ├── BanStage.js
-│   ├── CounterpickStage.js
-│   ├── Tip.js
-│   └── index.js
-├── routes/
-│   ├── characters.js
-│   ├── banStages.js
-│   ├── counterpickStages.js
-│   └── tips.js
-├── seeders/
-│   └── seed.js
-├── tests/
-│   ├── characters.test.js
-│   ├── banStages.test.js
-│   ├── counterpickStages.test.js
-│   └── tips.test.js
-├── app.js
-├── server.js
-└── README.md
-```
+- Characters, Ban Stages, Counterpick Stages, Tips  
+- Full CRUD operations for all resources  
+- Relational database with Sequelize associations  
+- JWT authentication (login + registration)  
+- Role-based permissions (`user`, `admin`)  
+- Password hashing (bcrypt)  
+- Automated tests with Jest + Supertest  
 
 
-## How to Set Everything Up
 
-### Install all packages:
+## Technology Stack
 
-```
+- Node.js  
+- Express.js  
+- Sequelize  
+- SQLite  
+- JWT  
+- bcrypt  
+- Jest + Supertest  
+
+
+
+## Getting Started
+
+### 1. Install dependencies
+```bash
 npm install
 ```
 
-### Create the database tables:
-
+### 2. Environment variables  
+Create a `.env` file:
 ```
+JWT_SECRET=supersecretkey123
+TOKEN_EXPIRATION=2h
+PORT=3000
+```
+
+### 3. Sync the database
+```bash
 npm run db:sync
 ```
 
-### Load sample data:
-
-```
-npm run db:seed
-```
-
-### Start the server:
-
-```
+### 4. Start the server
+```bash
 npm run dev
 ```
 
-(`npm start` works fine too)
-
-The server uses port **3000**.
-
-
-
-## Running Tests
-
-There are basic Jest + Supertest tests included for each resource type.
-
-Run them with:
-
+Server will run at:
 ```
-npm test
+http://localhost:3000
 ```
 
 
 
 ## API Endpoints
 
-Below is a simple overview of the available routes.
+### Authentication
+- POST /auth/register — Register a new user  
+- POST /auth/login — Log in and receive a JWT  
 
-
-
-### Characters
-
-- **GET /characters** – get all characters  
-- **GET /characters/:id** – get one character and all their matchup info  
-- **POST /characters** – add a new character  
-- **PUT /characters/:id** – update an existing character  
-- **DELETE /characters/:id** – delete a character  
-
-
-
-### Ban Stages
-
-- **GET /ban-stages** – get all ban stages  
-- **GET /ban-stages/:id** – get one ban stage  
-- **POST /ban-stages** – add a ban stage  
-- **PUT /ban-stages/:id** – update a ban stage  
-- **DELETE /ban-stages/:id** – delete a ban stage  
-
-
-
-### Counterpick Stages
-
-- **GET /counterpick-stages** – get all counterpick stages  
-- **GET /counterpick-stages/:id** – get one counterpick stage  
-- **POST /counterpick-stages** – add a counterpick stage  
-- **PUT /counterpick-stages/:id** – update one  
-- **DELETE /counterpick-stages/:id** – delete one  
-
-
-
-### Tips
-
-- **GET /tips** – get all tips  
-- **GET /tips/:id** – get one tip  
-- **POST /tips** – add a new tip  
-- **PUT /tips/:id** – update a tip  
-- **DELETE /tips/:id** – delete a tip  
-
-
-
-## Character Lookup (Main Feature)
-
-The main feature of the API is that when you request:
-
+Send JWT tokens as:
 ```
-GET /characters/:id
+Authorization: Bearer <token>
 ```
 
-it returns:
-
-- the character’s basic info  
-- all stages they should ban  
-- all stages they should counterpick  
-- all matchup tips  
-
-This makes it easy to look up matchup information quickly.
 
 
-## Technologies Used
+## User Roles
 
-- Node.js  
-- Express  
-- SQLite  
-- Sequelize  
-- Jest  
-- Supertest  
-- Nodemon  
+### user
+- Can read all content  
+- Can create tips  
 
-
-## Future Additions
-
-Planned future updates include:
-
-- User authentication  
-- Admin/user roles  
-- More detailed matchup notes  
-- Support for the entire Smash Ultimate roster  
-- Possibly more filters or searching options  
+### admin
+- Full access to create, update, and delete characters, stages, and tips  
 
 
-## Note
 
-Since the project focuses on Pit and Dark Pit, the tips section leans more toward **Dark Pit strategies** as I mainly play Dark Pit.
+## Characters Endpoints
 
+- GET /characters — Get all characters  
+- GET /characters/:id — Get a character with all matchup info  
+- POST /characters — Create a character *(admin only)*  
+- PUT /characters/:id — Update a character *(admin only)*  
+- DELETE /characters/:id — Delete a character *(admin only)*  
+
+
+
+## Ban Stage Endpoints
+
+- GET /ban-stages — Get all ban stages  
+- POST /ban-stages — Create a ban stage *(admin only)*  
+- PUT /ban-stages/:id — Update a ban stage *(admin only)*  
+- DELETE /ban-stages/:id — Delete a ban stage *(admin only)*  
+
+
+
+## Counterpick Stage Endpoints
+
+- GET /counterpick-stages — Get all counterpick stages  
+- POST /counterpick-stages — Create a counterpick stage *(admin only)*  
+- PUT /counterpick-stages/:id — Update a counterpick stage *(admin only)*  
+- DELETE /counterpick-stages/:id — Delete a counterpick stage *(admin only)*  
+
+
+
+## Tips Endpoints
+
+- GET /tips — Get all tips  
+- POST /tips — Create a new tip *(user or admin)*  
+- PUT /tips/:id — Update a tip  
+- DELETE /tips/:id — Delete a tip *(admin only)*  
+
+
+
+## Database Models
+
+### Character  
+- id  
+- name  
+- archetype  
+- weightClass  
+
+### BanStage  
+- id  
+- stageName  
+- reason  
+- dangerRating  
+- characterId  
+
+### CounterpickStage  
+- id  
+- stageName  
+- benefit  
+- rating  
+- characterId  
+
+### Tip  
+- id  
+- tipTitle  
+- description  
+- difficultyLevel  
+- characterId  
+
+### User  
+- id  
+- email  
+- password (hashed)  
+- role  
+
+
+
+## Testing
+
+Run all tests:
+```bash
+npm test
+```
+
+Covers:
+- Characters  
+- Ban Stages  
+- Counterpick Stages  
+- Tips  
+- Authentication  
+- Authorization  
+
+
+
+## Future Enhancements
+
+- Expanded roster  
+- Search + filtering  
+- Pagination  
+- Advanced matchup scoring  
+- Frontend UI (optional future)  
+
+
+
+## Summary
+
+This API is a complete backend system designed to support competitive Smash Ultimate matchup analysis for Pit and Dark Pit. It includes a relational database, authentication, authorization, and full CRUD functionality.
+
+```
