@@ -35,7 +35,7 @@ app.use('/auth', require('./routes/auth'));
 
 
 app.use('/characters', require('./routes/characters'));
-app.use('/ban-stages', require('./routes/banStages'));
+app.use('/ban-stages', require('./routes/banstages'));
 app.use('/counterpick-stages', require('./routes/counterpickStages'));
 app.use('/tips', require('./routes/tips'));
 
