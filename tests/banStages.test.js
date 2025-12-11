@@ -1,13 +1,16 @@
+jest.setTimeout(20000); // allow up to 20 seconds for DB setup
+
+
 const request = require('supertest');
 const app = require('../app');
 const sequelize = require('../config/database');
-const initModels = require('../models');
 
 beforeAll(async () => {
-  const models = initModels(sequelize);
+  const models = require('../models')(sequelize);
+
   await sequelize.sync({ force: true });
 
-  // Create a character because BanStage requires characterId
+  // Create a character because BanStage belongs to Character
   const character = await models.Character.create({
     name: 'Character A',
     archetype: 'test-type',

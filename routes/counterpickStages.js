@@ -2,6 +2,9 @@
 
 const express = require('express');
 const router = express.Router();
+const authMiddleware = require('../middleware/authMiddleware');
+const requireAdmin = require('../middleware/requireAdmin');
+
 
 // GET /counterpick-stages – get all counterpick stages
 router.get('/', async (req, res, next) => {
@@ -31,7 +34,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // POST /counterpick-stages – create a new counterpick stage
-router.post('/', async (req, res, next) => {
+router.post('/', authMiddleware, requireAdmin, async (req, res, next) => {
   try {
     const { CounterpickStage, Character } = req.models;
     const { characterId, stageName, benefit, rating } = req.body;
@@ -75,7 +78,7 @@ router.post('/', async (req, res, next) => {
 
 
 // PUT /counterpick-stages/:id – update a counterpick stage
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', authMiddleware, requireAdmin, async (req, res, next) => {
   try {
     const { CounterpickStage } = req.models;
     const stage = await CounterpickStage.findByPk(req.params.id);
@@ -121,7 +124,7 @@ router.put('/:id', async (req, res, next) => {
 
 
 // DELETE /counterpick-stages/:id – delete a counterpick stage
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', authMiddleware, requireAdmin, async (req, res, next) => {
   try {
     const { CounterpickStage } = req.models;
     const stage = await CounterpickStage.findByPk(req.params.id);

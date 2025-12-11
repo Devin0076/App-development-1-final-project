@@ -1,3 +1,6 @@
+jest.setTimeout(20000); // allow up to 20 seconds for DB setup
+
+
 const request = require('supertest');
 const app = require('../app');
 const sequelize = require('../config/database');

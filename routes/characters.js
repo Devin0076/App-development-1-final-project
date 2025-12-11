@@ -2,6 +2,9 @@
 
 const express = require('express');
 const router = express.Router();
+const authMiddleware = require('../middleware/authMiddleware');
+const requireAdmin = require('../middleware/requireAdmin');
+
 
 // GET /characters – get all characters
 router.get('/', async (req, res, next) => {
@@ -39,7 +42,7 @@ router.get('/:id', async (req, res, next) => {
 
 
 // POST /characters – create new character
-router.post('/', async (req, res, next) => {
+router.post('/', authMiddleware, requireAdmin, async (req, res, next) => {
   try {
     const { Character } = req.models;
     const { name, archetype, weightClass } = req.body;
@@ -61,7 +64,7 @@ router.post('/', async (req, res, next) => {
 });
 
 // PUT /characters/:id – update character
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', authMiddleware, requireAdmin, async (req, res, next) => {
   try {
     const { Character } = req.models;
     const character = await Character.findByPk(req.params.id);
@@ -87,7 +90,7 @@ router.put('/:id', async (req, res, next) => {
 });
 
 // DELETE /characters/:id – delete character
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', authMiddleware, requireAdmin, async (req, res, next) => {
   try {
     const { Character } = req.models;
     const character = await Character.findByPk(req.params.id);

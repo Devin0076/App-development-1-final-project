@@ -1,10 +1,13 @@
+jest.setTimeout(20000); // allow up to 20 seconds for DB setup
+
+
 const request = require('supertest');
 const app = require('../app');
 const sequelize = require('../config/database');
-const initModels = require('../models');
 
 beforeAll(async () => {
-  const models = initModels(sequelize);
+  const models = require('../models')(sequelize);
+
   await sequelize.sync({ force: true });
 
   await models.Character.create({

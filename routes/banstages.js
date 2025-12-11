@@ -2,6 +2,9 @@
 
 const express = require('express');
 const router = express.Router();
+const authMiddleware = require('../middleware/authMiddleware');
+const requireAdmin = require('../middleware/requireAdmin');
+
 
 // GET /ban-stages – get all ban stages
 router.get('/', async (req, res, next) => {
@@ -31,7 +34,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // POST /ban-stages – create a new ban stage
-router.post('/', async (req, res, next) => {
+router.post('/', authMiddleware, requireAdmin, async (req, res, next) => {
   try {
     const { BanStage, Character } = req.models;
     const { characterId, stageName, reason, dangerRating } = req.body;
@@ -75,7 +78,7 @@ router.post('/', async (req, res, next) => {
 
 
 // PUT /ban-stages/:id – update a ban stage
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', authMiddleware, requireAdmin, async (req, res, next) => {
   try {
     const { BanStage } = req.models;
     const banStage = await BanStage.findByPk(req.params.id);
@@ -121,7 +124,7 @@ router.put('/:id', async (req, res, next) => {
 
 
 // DELETE /ban-stages/:id – delete a ban stage
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', authMiddleware, requireAdmin, async (req, res, next) => {
   try {
     const { BanStage } = req.models;
     const banStage = await BanStage.findByPk(req.params.id);

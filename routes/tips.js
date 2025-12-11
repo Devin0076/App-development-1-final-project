@@ -3,6 +3,10 @@
 const express = require('express');
 const router = express.Router();
 
+const authMiddleware = require('../middleware/authMiddleware');
+const requireAdmin = require('../middleware/requireAdmin');
+
+
 const ALLOWED_DIFFICULTIES = ['easy', 'medium', 'hard'];
 
 // GET /tips – get all tips
@@ -34,7 +38,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // POST /tips – create a new tip
-router.post('/', async (req, res, next) => {
+router.post('/', authMiddleware, async (req, res, next) => {
   try {
     const { Tip, Character } = req.models;
     const { characterId, tipTitle, description, difficultyLevel } = req.body;
@@ -126,7 +130,7 @@ router.put('/:id', async (req, res, next) => {
 
 
 // DELETE /tips/:id – delete a tip
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', authMiddleware, requireAdmin, async (req, res, next) => {
   try {
     const { Tip } = req.models;
     const tip = await Tip.findByPk(req.params.id);
