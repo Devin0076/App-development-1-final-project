@@ -1,13 +1,11 @@
+# Dark Pit / Pit Matchup Guide API
 
-# Pit / Dark Pit Matchup API
+A production-style REST API built to support competitive Super Smash Bros. Ultimate players by providing structured matchup analysis for Pit and Dark Pit.
 
-This REST API provides matchup information for the characters Pit and Dark Pit in Super Smash Bros. Ultimate. Players can look up any character and instantly see all relevant matchup data in one place, including:
+This backend system allows players to retrieve character-specific strategy data including stage bans, counterpicks, and matchup tips. The API includes full authentication, role-based authorization, relational database modeling, and automated testing.
 
-- Stages to ban
-- Stages to counterpick
-- General matchup tips
+Built as a final backend development project, this application demonstrates secure API design, database relationships, and scalable backend architecture.
 
-The API was built as a backend development final project using Node.js, Express.js, Sequelize ORM, SQLite, and JWT-based authentication with role-based authorization.
 
 
 
